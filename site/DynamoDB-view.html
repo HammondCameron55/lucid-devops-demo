@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>DynamoDB Submissions Viewer</title>
+
+    <!-- Reuse your styling -->
+    <link href="assets/img/HammondCameron(web, Square).jpg" rel="icon" />
+    <link
+      href="assets/vendor/bootstrap/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="assets/vendor/bootstrap-icons/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link href="assets/vendor/aos/aos.css" rel="stylesheet" />
+    <link
+      href="assets/vendor/glightbox/css/glightbox.min.css"
+      rel="stylesheet"
+    />
+    <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet" />
+    <link href="assets/css/main.css" rel="stylesheet" />
+  </head>
+
+  <body class="index-page">
+    <!-- Sidebar -->
+    <header id="header" class="header dark-background d-flex flex-column">
+      <i class="header-toggle d-xl-none bi bi-list"></i>
+      <div class="profile-img">
+        <img
+          src="assets/img/HammondCameron(web, Square).jpg"
+          alt=""
+          class="img-fluid rounded-circle"
+        />
+      </div>
+      <a
+        href="index.html"
+        class="logo d-flex align-items-center justify-content-center"
+      >
+        <h1 class="sitename">Cameron Hammond</h1>
+      </a>
+      <div class="social-links text-center">
+        <a href="https://www.facebook.com/cameron.hammond.583" class="facebook"
+          ><i class="bi bi-facebook"></i
+        ></a>
+        <a href="https://www.instagram.com/camham55/" class="instagram"
+          ><i class="bi bi-instagram"></i
+        ></a>
+        <a
+          href="https://www.linkedin.com/in/cameron-hammond-317993140/"
+          class="linkedin"
+          ><i class="bi bi-linkedin"></i
+        ></a>
+      </div>
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li>
+            <a href="index.html#hero" class="active">
+              <i class="bi bi-house navicon"></i>Home
+            </a>
+          </li>
+          <li>
+            <a href="index.html#about">
+              <i class="bi bi-person navicon"></i>About
+            </a>
+          </li>
+          <li>
+            <a href="index.html#resume">
+              <i class="bi bi-file-earmark-text navicon"></i>Resume
+            </a>
+          </li>
+          <!-- "Get to know me" link intentionally hidden from site navigation.
+          <li>
+            <a href="get-to-know-me.html">
+              <i class="bi bi-compass navicon"></i>Get to know me
+            </a>
+          </li>
+          -->
+          <li class="dropdown">
+            <a href="aws-main.html">
+              <i class="bi bi-menu-button navicon"></i>
+              <span>AWS Services Used</span>
+              <i class="bi bi-chevron-down toggle-dropdown"></i>
+            </a>
+            <ul>
+              <li><a href="s3-books.html">S3 Book List</a></li>
+              <li><a href="lambda-and-API-Gateway.html">Lambda Function</a></li>
+              <li><a href="DynamoDB-view.html">DynamoDB</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      
+    </header>
+
+    <main class="main">
+      <section class="section" style="padding-top: 100px">
+        <div class="container">
+          <h2 class="text-center mb-5">📋 DynamoDB Form Submissions</h2>
+          <div id="submissions" class="row gy-4 justify-content-center"></div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      async function loadSubmissions() {
+        const res = await fetch(
+          "https://qtk3v3b5sh.execute-api.us-east-1.amazonaws.com/prod/submit"
+        );
+        const data = await res.json();
+
+        const container = document.getElementById("submissions");
+        container.innerHTML = "";
+
+        if (!Array.isArray(data)) {
+          container.innerHTML =
+            "<p class='text-danger text-center'>Failed to load submissions.</p>";
+          return;
+        }
+
+        data.forEach((item) => {
+          const col = document.createElement("div");
+          col.className = "col-md-6 col-lg-4";
+
+          col.innerHTML = `
+          <div class="card shadow-sm h-100">
+            <div class="card-body">
+              <h5 class="card-title">${item.name || "Anonymous"}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">${item.email}</h6>
+              <p class="card-text">${item.message}</p>
+              <p><strong>Reason:</strong> ${item.reason}</p>
+              <small class="text-muted">${new Date(
+                item.timestamp
+              ).toLocaleString()}</small>
+            </div>
+          </div>
+        `;
+
+          container.appendChild(col);
+        });
+      }
+
+      window.addEventListener("DOMContentLoaded", loadSubmissions);
+    </script>
+
+    <!-- JS scripts -->
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/aos/aos.js"></script>
+    <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>

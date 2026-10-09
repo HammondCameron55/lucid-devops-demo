@@ -1,0 +1,170 @@
+# Infrastructure pipeline for the demo site (infra/site).
+#   Pull request -> fmt, validate, plan, and post the plan as a PR comment
+#   Merge to main -> plan again, wait for approval on the "production" environment, then apply
+name: Terraform
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "infra/site/**"
+      - "site/**"
+      - ".github/workflows/terraform.yml"
+  push:
+    branches: [main]
+    paths:
+      - "infra/site/**"
+      - "site/**"
+      - ".github/workflows/terraform.yml"
+  workflow_dispatch:
+
+# Never let two runs touch the same state at once.
+concurrency:
+  group: terraform-site
+  cancel-in-progress: false
+
+permissions:
+  id-token: write # lets the job request an OIDC token to log in to AWS
+  contents: read
+  pull-requests: write # lets the job comment the plan on the PR
+
+env:
+  TF_VERSION: 1.9.8
+  AWS_REGION: us-east-1
+  TF_IN_AUTOMATION: "true"
+
+defaults:
+  run:
+    working-directory: infra/site
+
+jobs:
+  plan:
+    name: Plan
+    # Skip until infra/bootstrap has been run and its outputs saved as repo variables.
+    if: vars.AWS_ROLE_ARN != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false
+
+      - name: Log in to AWS (OIDC, no stored keys)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: terraform fmt
+        run: terraform fmt -check -recursive ../
+
+      - name: terraform init
+        run: terraform init -input=false -backend-config="bucket=${{ vars.TF_STATE_BUCKET }}"
+
+      - name: terraform validate
+        run: terraform validate -no-color
+
+      - name: terraform plan
+        run: |
+          terraform plan -input=false -no-color -out=tfplan
+          terraform show -no-color tfplan > plan.txt
+
+      - name: Add plan to run summary
+        run: |
+          {
+            echo "## Terraform plan"
+            echo '```'
+            grep -E '^(Plan:|No changes)' plan.txt || true
+            echo '```'
+            echo '<details><summary>Full plan</summary>'
+            echo
+            echo '```'
+            head -c 60000 plan.txt
+            echo '```'
+            echo '</details>'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment plan on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const plan = fs.readFileSync('infra/site/plan.txt', 'utf8');
+            const summary = (plan.match(/^(Plan:.*|No changes\..*)$/m) || ['(see full plan)'])[0];
+            const marker = '<!-- terraform-plan -->';
+            const body = [
+              marker,
+              `### Terraform plan: \`${summary}\``,
+              `Commit ${context.sha.substring(0, 7)} · [workflow run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`,
+              '<details><summary>Show full plan</summary>',
+              '',
+              '```',
+              plan.length > 60000 ? plan.substring(0, 60000) + '\n... (truncated)' : plan,
+              '```',
+              '</details>',
+            ].join('\n');
+
+            // Update the existing plan comment instead of adding a new one on every push.
+            const { data: comments } = await github.rest.issues.listComments({
+              ...context.repo, issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({ ...context.repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ ...context.repo, issue_number: context.issue.number, body });
+            }
+
+      - name: Save plan for the apply job
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: infra/site/tfplan
+          retention-days: 1
+
+  apply:
+    name: Apply
+    needs: plan
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment: production # add required reviewers on this environment for a manual approval gate
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false
+
+      - name: Log in to AWS (OIDC, no stored keys)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+          path: infra/site
+
+      - name: terraform init
+        run: terraform init -input=false -backend-config="bucket=${{ vars.TF_STATE_BUCKET }}"
+
+      # Applies exactly the plan that was reviewed, nothing more.
+      - name: terraform apply
+        run: terraform apply -input=false -no-color tfplan
+
+      - name: Clear CloudFront cache so changes show up right away
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "$(terraform output -raw cloudfront_distribution_id)" \
+            --paths "/*"
+
+      - name: Add site URL to run summary
+        run: |
+          echo "## Deployed :rocket:" >> "$GITHUB_STEP_SUMMARY"
+          echo "$(terraform output -raw site_url)" >> "$GITHUB_STEP_SUMMARY"

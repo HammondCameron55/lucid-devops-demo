@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Lambda + API Gateway</title>
+
+    <!-- Reuse all your existing styles -->
+    <link href="assets/img/HammondCameron(web, Square).jpg" rel="icon" />
+    <link
+      href="assets/vendor/bootstrap/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="assets/vendor/bootstrap-icons/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link href="assets/vendor/aos/aos.css" rel="stylesheet" />
+    <link
+      href="assets/vendor/glightbox/css/glightbox.min.css"
+      rel="stylesheet"
+    />
+    <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet" />
+    <link href="assets/css/main.css" rel="stylesheet" />
+  </head>
+
+  <body class="index-page">
+    <!-- Sidebar -->
+    <header id="header" class="header dark-background d-flex flex-column">
+      <i class="header-toggle d-xl-none bi bi-list"></i>
+      <div class="profile-img">
+        <img
+          src="assets/img/HammondCameron(web, Square).jpg"
+          alt=""
+          class="img-fluid rounded-circle"
+        />
+      </div>
+      <a
+        href="index.html"
+        class="logo d-flex align-items-center justify-content-center"
+      >
+        <h1 class="sitename">Cameron Hammond</h1>
+      </a>
+      <div class="social-links text-center">
+        <a href="https://www.facebook.com/cameron.hammond.583" class="facebook"
+          ><i class="bi bi-facebook"></i
+        ></a>
+        <a href="https://www.instagram.com/camham55/" class="instagram"
+          ><i class="bi bi-instagram"></i
+        ></a>
+        <a
+          href="https://www.linkedin.com/in/cameron-hammond-317993140/"
+          class="linkedin"
+          ><i class="bi bi-linkedin"></i
+        ></a>
+      </div>
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li>
+            <a href="index.html#hero" class="active">
+              <i class="bi bi-house navicon"></i>Home
+            </a>
+          </li>
+          <li>
+            <a href="index.html#about">
+              <i class="bi bi-person navicon"></i>About
+            </a>
+          </li>
+          <li>
+            <a href="index.html#resume">
+              <i class="bi bi-file-earmark-text navicon"></i>Resume
+            </a>
+          </li>
+          <!-- "Get to know me" link intentionally hidden from site navigation.
+          <li>
+            <a href="get-to-know-me.html">
+              <i class="bi bi-compass navicon"></i>Get to know me
+            </a>
+          </li>
+          -->
+          <li class="dropdown">
+            <a href="aws-main.html">
+              <i class="bi bi-menu-button navicon"></i>
+              <span>AWS Services Used</span>
+              <i class="bi bi-chevron-down toggle-dropdown"></i>
+            </a>
+            <ul>
+              <li><a href="s3-books.html">S3 Book List</a></li>
+              <li><a href="lambda-and-API-Gateway.html">Lambda Function</a></li>
+              <li><a href="DynamoDB-view.html">DynamoDB</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      
+    </header>
+
+    <main class="main">
+      <section class="section" style="padding-top: 100px">
+        <div class="container">
+          <h2 class="text-center mb-4">🚀 Serverless Contact Form</h2>
+
+          <form
+            id="contactForm"
+            class="bg-light p-4 rounded shadow-sm"
+            onsubmit="return submitForm(event)"
+          >
+            <div class="mb-3">
+              <label for="name" class="form-label">Name</label>
+              <input type="text" id="name" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" id="email" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label for="reason" class="form-label"
+                >Why are you visiting?</label
+              >
+              <input type="text" id="reason" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label for="message" class="form-label">Message</label>
+              <textarea
+                id="message"
+                class="form-control"
+                rows="4"
+                required
+              ></textarea>
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-primary px-5">Send</button>
+            </div>
+          </form>
+
+          <div id="result" class="mt-3 text-center fw-bold"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- JS Script -->
+    <script>
+      async function submitForm(event) {
+        event.preventDefault();
+
+        const payload = {
+          name: document.getElementById("name").value,
+          email: document.getElementById("email").value,
+          reason: document.getElementById("reason").value,
+          message: document.getElementById("message").value,
+        };
+
+        const resultEl = document.getElementById("result");
+        resultEl.innerText = "Sending...";
+
+        try {
+          const res = await fetch(
+            "https://qtk3v3b5sh.execute-api.us-east-1.amazonaws.com/prod/submit",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(payload),
+            }
+          );
+
+          const data = await res.json();
+
+          if (res.ok) {
+            resultEl.innerText = "✅ Submission received!";
+            document.getElementById("contactForm").reset();
+          } else {
+            resultEl.innerText =
+              "❌ Error: " + (data.error || "Submission failed.");
+          }
+        } catch (err) {
+          resultEl.innerText = "❌ Network error: " + err.message;
+        }
+      }
+    </script>
+
+    <!-- Scripts (same as your other pages) -->
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/aos/aos.js"></script>
+    <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>

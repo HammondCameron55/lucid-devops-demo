@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" role="img" aria-labelledby="t">
+  <title id="t">Stylized round door and hillside</title>
+  <defs>
+    <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a6b3c"/>
+      <stop offset="100%" stop-color="#0d3d24"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="280" fill="#f4fafd"/>
+  <ellipse cx="200" cy="320" rx="260" ry="200" fill="url(#hill)"/>
+  <rect x="60" y="40" width="280" height="200" rx="24" fill="#d8c4a8" stroke="#8b7355" stroke-width="2"/>
+  <circle cx="200" cy="150" r="62" fill="#f5d547" stroke="#c9a227" stroke-width="3"/>
+  <circle cx="200" cy="150" r="8" fill="#050d18"/>
+  <path d="M140 95 L260 95 L200 55 Z" fill="#8b4513" stroke="#5c2e0c" stroke-width="2"/>
+  <rect x="95" y="120" width="36" height="44" rx="4" fill="#87ceeb" stroke="#149ddd" stroke-width="1.5"/>
+  <rect x="269" y="120" width="36" height="44" rx="4" fill="#87ceeb" stroke="#149ddd" stroke-width="1.5"/>
+</svg>

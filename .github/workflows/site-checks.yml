@@ -1,0 +1,33 @@
+# Checks that must pass before changes reach main.
+name: Site checks
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  html-check:
+    name: HTML check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Validate HTML markup
+        run: npx --yes html-validate@9 "site/*.html"
+
+  link-check:
+    name: Missing-file and broken-link check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check local files and anchors exist
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # --offline: only local files/anchors, so the check never flakes on outside sites.
+          args: --offline --include-fragments --no-progress "site/*.html"
+          fail: true

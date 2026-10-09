@@ -1,0 +1,12 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+tfplan
+plan.txt
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.env

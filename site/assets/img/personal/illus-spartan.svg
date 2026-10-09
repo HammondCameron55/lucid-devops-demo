@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" role="img" aria-labelledby="t">
+  <title id="t">Stylized obstacle race and bucket carry</title>
+  <rect width="400" height="280" fill="#f4fafd"/>
+  <rect y="200" width="400" height="80" fill="#c4b08a" opacity="0.5"/>
+  <path d="M0 210 Q100 190 200 205 T400 200 L400 280 L0 280 Z" fill="#a08f6b" opacity="0.35"/>
+  <rect x="230" y="95" width="110" height="90" rx="10" fill="#2d2d2d" stroke="#149ddd" stroke-width="2"/>
+  <path d="M120 175 Q160 120 200 130 T260 125" fill="none" stroke="#050d18" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="175" cy="118" r="18" fill="#f0d9c4" stroke="#050d18" stroke-width="2"/>
+  <rect x="155" y="138" width="44" height="52" rx="6" fill="#4a4a4a"/>
+  <text x="200" y="255" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#149ddd" font-weight="600">GRIT</text>
+</svg>

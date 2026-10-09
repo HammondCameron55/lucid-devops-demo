@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="archTitle archDesc">
+  <title id="archTitle">Portfolio site and agent architecture on AWS</title>
+  <desc id="archDesc">Route 53, Amplify, S3, API Gateway, Lambda, DynamoDB, and external Gemini and Tavily services.</desc>
+  <defs>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#151f2b"/>
+      <stop offset="100%" stop-color="#040b14"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#149ddd"/>
+      <stop offset="100%" stop-color="#0d7aa8"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#149ddd"/>
+    </marker>
+  </defs>
+  <rect width="960" height="540" fill="#f4fafd"/>
+  <text x="480" y="42" text-anchor="middle" font-family="Raleway,system-ui,sans-serif" font-size="22" fill="#050d18" font-weight="700">Cameron Hammond Digital Portfolio  runtime map</text>
+  <text x="480" y="66" text-anchor="middle" font-family="Roboto,system-ui,sans-serif" font-size="13" fill="#555">Vector overview · matches site navy / accent palette</text>
+
+  <g filter="url(#shadow)">
+    <rect x="40" y="100" width="200" height="110" rx="12" fill="url(#panel)" stroke="#149ddd" stroke-width="1.5"/>
+    <text x="140" y="138" text-anchor="middle" fill="#fff" font-family="Poppins,system-ui,sans-serif" font-size="15" font-weight="600">Route 53</text>
+    <text x="140" y="162" text-anchor="middle" fill="#a8a9b4" font-family="Roboto,sans-serif" font-size="11">DNS ’ Amplify</text>
+    <text x="140" y="186" text-anchor="middle" fill="#a8a9b4" font-family="Roboto,sans-serif" font-size="11">Custom domain</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="280" y="100" width="220" height="110" rx="12" fill="url(#panel)" stroke="#149ddd" stroke-width="1.5"/>
+    <text x="390" y="138" text-anchor="middle" fill="#fff" font-family="Poppins,sans-serif" font-size="15" font-weight="600">AWS Amplify</text>
+    <text x="390" y="162" text-anchor="middle" fill="#a8a9b4" font-family="Roboto,sans-serif" font-size="11">Static hosting (HTML/CSS/JS)</text>
+    <text x="390" y="186" text-anchor="middle" fill="#a8a9b4" font-family="Roboto,sans-serif" font-size="11">Optional rewrites to APIs</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="540" y="100" width="200" height="110" rx="12" fill="url(#panel)" stroke="#149ddd" stroke-width="1.5"/>
+    <text x="640" y="138" text-anchor="middle" fill="#fff" font-family="Poppins,sans-serif" font-size="15" font-weight="600">Amazon S3</text>
+    <text x="640" y="162" text-anchor="middle" fill="#a8a9b4" font-family="Roboto,sans-serif" font-size="11">Media &amp; book assets</text>
+    <text x="640" y="186" text-anchor="middle" fill="#a8a9b4" font-family="Roboto,sans-serif" font-size="11">Object storage</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="780" y="100" width="160" height="110" rx="12" fill="url(#panel)" stroke="#149ddd" stroke-width="1.5"/>
+    <text x="860" y="138" text-anchor="middle" fill="#fff" font-family="Poppins,sans-serif" font-size="14" font-weight="600">Browser</text>
+    <text x="860" y="162" text-anchor="middle" fill="#a8a9b4" font-family="Roboto,sans-serif" font-size="11">Recruiters &amp; visitors</text>
+    <text x="860" y="186" text-anchor="middle" fill="#a8a9b4" font-family="Roboto,sans-serif" font-size="11">Chat UI</text>
+  </g>
+
+  <line x1="240" y1="155" x2="280" y2="155" stroke="#149ddd" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="500" y1="155" x2="540" y2="155" stroke="#149ddd" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="740" y1="155" x2="780" y2="155" stroke="#149ddd" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <g filter="url(#shadow)">
+    <rect x="120" y="270" width="240" height="120" rx="12" fill="url(#panel)" stroke="url(#accent)" stroke-width="2"/>
+    <text x="240" y="308" text-anchor="middle" fill="#fff" font-family="Poppins,sans-serif" font-size="15" font-weight="600">API Gateway</text>
+    <text x="240" y="332" text-anchor="middle" fill="#a8a9b4" font-family="Roboto,sans-serif" font-size="11">HTTPS APIs</text>
+    <text x="240" y="354" text-anchor="middle" fill="#a8a9b4" font-family="Roboto,sans-serif" font-size="11">Contact form · data APIs</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="400" y="270" width="200" height="120" rx="12" fill="url(#panel)" stroke="url(#accent)" stroke-width="2"/>
+    <text x="500" y="308" text-anchor="middle" fill="#fff" font-family="Poppins,sans-serif" font-size="15" font-weight="600">AWS Lambda</text>
+    <text x="500" y="332" text-anchor="middle" fill="#a8a9b4" font-family="Roboto,sans-serif" font-size="11">Serverless compute</text>
+    <text x="500" y="354" text-anchor="middle" fill="#a8a9b4" font-family="Roboto,sans-serif" font-size="11">Integrations &amp; logic</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="640" y="270" width="200" height="120" rx="12" fill="url(#panel)" stroke="url(#accent)" stroke-width="2"/>
+    <text x="740" y="308" text-anchor="middle" fill="#fff" font-family="Poppins,sans-serif" font-size="15" font-weight="600">DynamoDB</text>
+    <text x="740" y="332" text-anchor="middle" fill="#a8a9b4" font-family="Roboto,sans-serif" font-size="11">Submissions &amp; app data</text>
+    <text x="740" y="354" text-anchor="middle" fill="#a8a9b4" font-family="Roboto,sans-serif" font-size="11">Low-latency NoSQL</text>
+  </g>
+
+  <line x1="360" y1="330" x2="400" y2="330" stroke="#149ddd" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="600" y1="330" x2="640" y2="330" stroke="#149ddd" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <path d="M390 210 L390 250 L500 250 L500 270" fill="none" stroke="#149ddd" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+  <text x="430" y="240" fill="#050d18" font-family="Roboto,sans-serif" font-size="11">Site calls APIs</text>
+
+  <g filter="url(#shadow)">
+    <rect x="80" y="430" width="260" height="88" rx="12" fill="#ffffff" stroke="#149ddd" stroke-width="1.5"/>
+    <text x="210" y="462" text-anchor="middle" fill="#050d18" font-family="Poppins,sans-serif" font-size="13" font-weight="600">Google Gemini API</text>
+    <text x="210" y="486" text-anchor="middle" fill="#555" font-family="Roboto,sans-serif" font-size="11">Chat + embeddings (agent backend)</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="380" y="430" width="240" height="88" rx="12" fill="#ffffff" stroke="#149ddd" stroke-width="1.5"/>
+    <text x="500" y="462" text-anchor="middle" fill="#050d18" font-family="Poppins,sans-serif" font-size="13" font-weight="600">Tavily API</text>
+    <text x="500" y="486" text-anchor="middle" fill="#555" font-family="Roboto,sans-serif" font-size="11">Web search tool</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="660" y="430" width="260" height="88" rx="12" fill="#ffffff" stroke="#149ddd" stroke-width="1.5"/>
+    <text x="790" y="458" text-anchor="middle" fill="#050d18" font-family="Poppins,sans-serif" font-size="13" font-weight="600">Agent backend (Node)</text>
+    <text x="790" y="478" text-anchor="middle" fill="#555" font-family="Roboto,sans-serif" font-size="11">Express · LangChain · tools</text>
+    <text x="790" y="498" text-anchor="middle" fill="#555" font-family="Roboto,sans-serif" font-size="10">Deploy on App Runner, ECS, EC2, or Lambda URL</text>
+  </g>
+
+  <path d="M820 418 L820 400 L500 400 L500 390" fill="none" stroke="#149ddd" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+  <path d="M210 418 L210 400 L360 400 L360 390" fill="none" stroke="#149ddd" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <path d="M500 418 L500 400 L640 400" fill="none" stroke="#149ddd" stroke-width="1.5" stroke-dasharray="5 4"/>
+</svg>
