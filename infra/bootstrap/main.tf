@@ -101,14 +101,18 @@ data "aws_iam_policy_document" "trust" {
 
     # Only these callers from this one repo may assume the role:
     #   - pull requests (plan), pushes to main (plan), and the "production" environment (apply)
+    # Both subject formats are listed: the classic "repo:owner/name" one and
+    # GitHub's immutable "repo:owner@id/name@id" one.
     condition {
       test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
-      values = [
-        "repo:${var.github_repo}:pull_request",
-        "repo:${var.github_repo}:ref:refs/heads/main",
-        "repo:${var.github_repo}:environment:production",
-      ]
+      values = flatten([
+        for prefix in ["repo:${var.github_repo}", var.github_immutable_sub_prefix] : [
+          "${prefix}:pull_request",
+          "${prefix}:ref:refs/heads/main",
+          "${prefix}:environment:production",
+        ]
+      ])
     }
   }
 }
